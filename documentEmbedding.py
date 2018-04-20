@@ -48,9 +48,13 @@ def main():
 		pickle_dump(word2vec, "./word2vec.p")
 	title2news = pickle_load("./title2news.p")
 	doc2embedding = {}
+	i = 0
+	print("Total News = {}".format(len(title2news)))
 	for title, news in title2news.items():
+		i = i + 1
+		if i % 100 == 0:
+			print("On ", i)
 		doc2embedding[title] = article_embedding(news, word2vec)
-	pprint(doc2embedding)
 	pickle_dump(doc2embedding, "./title2embedding.p")
 	# save the file
 
