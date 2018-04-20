@@ -8,14 +8,20 @@
 
 ### 1. Preprocess articles as textfile
 
-In this step, concatenating all article text into one ```data.txt``` file.
-
 #### Input
 A series of text files.
 #### Output
 ``data.txt`` which contains all concatenation of input text files.
 
+In this step, concatenating all article text into one ```data.txt``` file.
+
+
 ### 2. Apply ``fasttext`` to train the vocabulary set using language model
+
+#### Input
+```data.txt``` which is from above output.
+#### Output
+```model.bin```, ```model.vec```
 
 **(For configurations of ``fasttext``, please refer to the [link](https://github.com/facebookresearch/fastText).)**
 
@@ -38,14 +44,20 @@ where ```data.txt``` has ```61428``` vocabularies, and each word has ```100``` d
 
 Note that the values of each dimension has no actually meanings, they are just the position in the vector space.
 
-#### Input
-```data.txt``` which is from above output.
-#### Output
-```model.bin```, ```model.vec```
+
 
 ### 3. Concate Word Representation into Article Representation
 
-```$ python documentEmbedding.py```
+#### Input
+```title2article.p``` which is a python dictionary that has the structure of ```{title: text}```.
+
+```word2vec.p``` or ```model.vec```, where ```word2vec.p``` is the preprocessed word vectors, and ```model.vec``` is the vanilla output of fasttext.
+
+#### Output
+```[output dir]/title2embedding.p```, is a python dictionary containing ```{title: [%f, %f, ...]}```
+
+
+```$ python documentEmbedding.py -t [load pickle of title2news] -o [the output directory]```
 
 This python script searches the current director, if the pickle file of preprocessed word vectors does not exist, it 
 1. **Reads in the ```model.vec```**
@@ -73,14 +85,30 @@ The parameter ```word2vec``` is the preprocessed vector represenation of each wo
 Note: above approach to represent an ariticle is just an experiement without founded theories.
 
 
+### 4. Cluster Articles using Kmeans Clustering
+
 #### Input
-```title2article.p``` which is a python dictionary that has the structure of ```{title: text}```.
-
-```word2vec.p``` or ```model.vec```, where ```word2vec.p``` is the preprocessed word vectors, and ```model.vec``` is the vanilla output of fasttext.
-
+```./title2embedding.p``` or the output from **step 3**.
 #### Output
-```title2embedding.p```, is a python dictionary containing ```{title: [%f, %f, ...]}```
+```./news_embedding_2001_2005_group[k].p```
+which contains a dictionary with:
+```
+{
+	'group1': [title1, title2, ...]
+	.. k groups in total
+}
+```
 
+Simply type and give the following option: 
+```python trainClassify.py -k [clusters] -f [input pickle file path]```
+which will cluster news data by group of **clusters**.
 
+This script applies kmeans clustering in sklearn to cluster article vectors into [clusters] groups.
 
+### Note
 
+1. toNews.py
+
+```$ python toNews.py -n [path to all article csv] -k [specify if you only want noun and adjs]```
+
+Takes news files in csv and cleaned the text.
