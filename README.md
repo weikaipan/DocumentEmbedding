@@ -1,5 +1,7 @@
 # DocumentEmbedding
 
+For the grouping result, please refer to the notebook [./grouped_news_train.ipynb](https://github.com/weikaipan/Media-And-Judging/blob/master/DocumentEmbedding/grouped_news_train.ipynb).
+
 ## Decription:
 
 **DocumentEmbedding embeds articles using word vectors trained by language model and applies vector operations to produce a vector representation of an aritcle. The language model applies ```fasttext```. For more use in fasttext, please refer to this [link](https://github.com/facebookresearch/fastText).**
